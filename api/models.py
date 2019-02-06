@@ -15,7 +15,7 @@ class HostParameter(models.Model):
     """
     Model to store individual parameters i.e. info about a particular host.
     """
-    host = models.ForeignKey(Host, on_delete=models.CASCADE)
+    host = models.ForeignKey(Host, related_name='parameters', on_delete=models.CASCADE)
     oid = models.CharField(max_length=100, null=True, blank=True)
     value = models.CharField(max_length=100, null=True, blank=True)
 

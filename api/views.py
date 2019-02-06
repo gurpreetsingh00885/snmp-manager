@@ -1,8 +1,9 @@
 from snmp_manager.users.models import User
+from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework import views
 from api.models import Host, HostParameter
-from api.serializers import UserSerializer
+from api.serializers import UserSerializer, HostSerializer
 from rest_framework.response import Response
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -21,7 +22,7 @@ class Home(views.APIView):
 
 home = Home.as_view()
 
-class CreateOrUpdateHost(views.APIView):
+class CreateOrUpdateHostView(views.APIView):
     """
     To be called only by our traphandler script in order to update or add
     information about a certain host.
@@ -47,4 +48,11 @@ class CreateOrUpdateHost(views.APIView):
 
         return Response({"status" : "successful"})
 
-create_update_host = CreateOrUpdateHost.as_view()
+create_update_host = CreateOrUpdateHostView.as_view()
+
+class HostListView(generics.ListAPIView):
+    model = Host
+    queryset = Host.objects.all()
+    serializer_class = HostSerializer
+
+host_list = HostListView.as_view()
