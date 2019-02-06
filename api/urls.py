@@ -10,4 +10,5 @@ router.register('users', views.UserViewSet)
 urlpatterns = [
     path('', views.home),
     path('', include(router.urls)),
+    path('host/', views.create_update_host)
 ]

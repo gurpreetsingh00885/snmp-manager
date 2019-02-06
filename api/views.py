@@ -19,3 +19,14 @@ class Home(views.APIView):
         return Response({"status": "OK"})
 
 home = Home.as_view()
+
+class CreateOrUpdateHost(views.APIView):
+    """
+    To be called only by our traphandler script in order to update or add
+    information about a certain host.
+    """
+    def post(self, request, format=None):
+        print(request.data)
+        return Response(request.data)
+
+create_update_host = CreateOrUpdateHost.as_view()
