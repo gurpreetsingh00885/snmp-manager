@@ -1,0 +1,24 @@
+#!/bin/sh
+
+read host
+read ip
+vars=
+
+while read oid val
+do
+  if [ "$vars" = "" ]
+  then
+    vars="$oid<is>$val"
+  else
+    vars="$vars,$oid<is>$val"
+  fi
+done
+
+logger $vars $ip
+
+curl --header "Content-Type: application/json" \
+     --request POST \
+     --data '{"ip":"'"$ip"'", "host": "'"$host"'", "vars":"'"$vars"'"}' \
+     http://localhost:8000/api/host/
+
+#snmptrap -v 2c -c public localhost '' 1.3.6.1.4.1.8072.2.3.0.1 1.3.6.1.2.1.2.2.1.6 s "54:54:54:54:54:54"
