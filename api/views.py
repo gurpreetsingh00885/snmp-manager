@@ -1,3 +1,4 @@
+import re
 from snmp_manager.users.models import User
 from rest_framework import generics
 from rest_framework import viewsets
@@ -28,12 +29,15 @@ class CreateOrUpdateHostView(views.APIView):
     information about a certain host.
     """
     def post(self, request, format=None):
+        ip = request.data['ip']
+        ip_addr = re.findall(r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b", ip)[0]
         variables = request.data["vars"]
         temp = {}
         for oid, val in [x.split("<is>") for x in variables.split(',')]:
             temp[oid] =  val
+        temp.pop("SNMPv2-MIB::snmpTrapOID.0")
         mac_addr = temp.pop("IF-MIB::ifPhysAddress")
-        host, created = Host.objects.get_or_create(mac_addr=mac_addr)
+        host, created = Host.objects.get_or_create(mac_addr=mac_addr, current_ip=ip_addr)
 
         if created:
             for oid in temp:
